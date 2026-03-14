@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Product Order List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            padding: 15px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        .intro {
+            color: #34495e;
+            margin-bottom: 25px;
+            font-size: 16px;
+            text-align: center;
+        }
+        /* 顾客收货信息表单样式 */
+        .customer-form {
+            background-color: #f8f9fa;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .form-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .form-item {
+            margin-bottom: 12px;
+        }
+        .form-item:last-child {
+            margin-bottom: 0;
+        }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #34495e;
+            margin-bottom: 5px;
+        }
+        .form-label .required {
+            color: #e74c3c;
+        }
+        .form-input {
+            width: 100%;
+            height: 42px;
+            padding: 0 12px;
+            border: 1px solid #dddddd;
+            border-radius: 6px;
+            font-size: 15px;
+            background-color: #ffffff;
+        }
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px 12px;
+            border: 1px solid #dddddd;
+            border-radius: 6px;
+            font-size: 15px;
+            background-color: #ffffff;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        /* 商品列表样式（带图片） */
+        .product-list {
+            margin-bottom: 20px;
+        }
+        .product-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eeeeee;
+            gap: 10px;
+        }
+        .product-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid #f0f0f0;
+        }
+        .product-info {
+            flex: 1;
+            min-width: 180px;
+        }
+        .product-name {
+            display: block;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+        .product-price {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background-color: #3498db;
+            color: #ffffff;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .qty-btn:active {
+            background-color: #2980b9;
+        }
+        .qty-input {
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+        .product-subtotal {
+            width: 70px;
+            text-align: right;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .extra-note {
+            background-color: #e8f4fd;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 20px 0;
+            color: #2980b9;
+            font-weight: 500;
+            text-align: center;
+        }
+        .summary {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .summary-item:last-child {
+            margin-bottom: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        .order-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #27ae60;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .order-btn:active {
+            background-color: #219653;
+        }
+        .order-detail {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dddddd;
+            white-space: pre-line;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0,0,0,0.8);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Assalamualaikum</h1>
+        <p class="intro">Below is the price list of all our products. You can place your order after checking the list:</p>
+        
+        <!-- 顾客收货信息表单 -->
+        <div class="customer-form">
+            <div class="form-title">Customer Delivery Information</div>
+            <div class="form-item">
+                <label class="form-label">Full Name <span class="required">*</span></label>
+                <input type="text" id="customer-name" class="form-input" placeholder="Please enter your full name">
+            </div>
+            <div class="form-item">
+                <label class="form-label">Phone Number <span class="required">*</span></label>
+                <input type="tel" id="customer-phone" class="form-input" placeholder="Please enter your 11-digit phone number" maxlength="11">
+            </div>
+            <div class="form-item">
+                <label class="form-label">Full Delivery Address <span class="required">*</span></label>
+                <textarea id="customer-address" class="form-textarea" placeholder="Please enter your full delivery address (including province, city, district and detailed address)"></textarea>
+            </div>
+        </div>
+
+        <div id="product-list" class="product-list"></div>
+
+        <div class="extra-note">
+            In addition, we can also bring any Bangladeshi products according to your requirements. For more details please inbox 📥
+        </div>
+
+        <div class="summary">
+            <div class="summary-item">
+                <span>Total Quantity:</span>
+                <span id="total-qty">0</span>
+            </div>
+            <div class="summary-item">
+                <span>Total Amount:</span>
+                <span id="total-amount">0.00 RMB</span>
+            </div>
+        </div>
+
+        <button id="generate-order-btn" class="order-btn">Generate & Copy Order</button>
+
+        <div id="order-detail" class="order-detail" style="display: none;"></div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // 商品列表（替换 img 链接为你自己的商品图片地址）
+        const products = [
+            { id: 1, name: "Chashi Chini Gura Rice 1 kg", price: 35, img: "https://via.placeholder.com/60" },
+            { id: 2, name: "Laccha Semai 200g", price: 12, img: "https://via.placeholder.com/60" },
+            { id: 3, name: "Ruchi Jhal Chanachu 300 gm", price: 23, img: "https://via.placeholder.com/60" },
+            { id: 4, name: "Bombay Sweets Chanachur 300 gm", price: 23, img: "https://via.placeholder.com/60" },
+            { id: 5, name: "Pran Premium Ghee 400 gm", price: 62, img: "https://via.placeholder.com/60" },
+            { id: 6, name: "Radhuni Biryani Masala", price: 12, img: "https://via.placeholder.com/60" },
+            { id: 7, name: "Fresh Premium Moshur Dal 1 kg", price: 35, img: "https://via.placeholder.com/60" },
+            { id: 8, name: "Radhuni Cumin (Jira) Powder 200 gm", price: 35, img: "https://via.placeholder.com/60" },
+            { id: 9, name: "Radhuni Meat Curry Masala 100gm", price: 14, img: "https://via.placeholder.com/60" },
+            { id: 10, name: "Teer Semolina Suji 500 gm", price: 20, img: "https://via.placeholder.com/60" },
+            { id: 11, name: "Radhuni Firni Mix 150 gm", price: 15, img: "https://via.placeholder.com/60" },
+            { id: 12, name: "Radhuni Tehari Masala 45 gm", price: 12, img: "https://via.placeholder.com/60" },
+            { id: 13, name: "Radhuni Faluda Mix 250 gm", price: 23, img: "https://via.placeholder.com/60" },
+            { id: 14, name: "Nestle Maggi Shaad-e Magic Seasoning Mix Sachet", price: 1.2, img: "https://via.placeholder.com/60" },
+            { id: 15, name: "Radhuni Haleem Mix 200 gm", price: 14, img: "https://via.placeholder.com/60" },
+            { id: 16, name: "Radhuni Borhani Masala 50 gm", price: 10, img: "https://via.placeholder.com/60" },
+            { id: 17, name: "Radhuni Roast Masala 35 gm", price: 12, img: "https://via.placeholder.com/60" },
+            { id: 18, name: "Pran Dal vaja", price: 2.5, img: "https://via.placeholder.com/60" },
+            { id: 19, name: "Pran muri 500 gm", price: 16, img: "https://via.placeholder.com/60" },
+            { id: 20, name: "Ispahani Mirzapore Best Leaf Tea", price: 16, img: "https://via.placeholder.com/60" },
+            { id: 21, name: "Nescafe Coffee 1 pack", price: 2, img: "https://via.placeholder.com/60" }
+        ];
+
+        // 页面加载完成后渲染商品
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+        });
+
+        // 渲染商品列表
+        function renderProducts() {
+            const productList = document.getElementById('product-list');
+            let html = '';
+            products.forEach(product => {
+                html += `
+                    <div class="product-item">
+                        <img src="${product.img}" alt="${product.name}" class="product-img" loading="lazy">
+                        <div class="product-info">
+                            <span class="product-name">${product.id}. ${product.name}</span>
+                            <span class="product-price">${product.price} RMB</span>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="qty-btn minus" data-id="${product.id}">-</button>
+                            <input type="number" class="qty-input" data-id="${product.id}" value="0" min="0">
+                            <button class="qty-btn plus" data-id="${product.id}">+</button>
+                        </div>
+                        <div class="product-subtotal" data-id="${product.id}">0.00 RMB</div>
+                    </div>
+                `;
+            });
+            productList.innerHTML = html;
+            bindEvents();
+        }
+
+        // 绑定所有交互事件
+        function bindEvents() {
+            // 加减按钮事件
+            document.querySelectorAll('.qty-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const input = document.querySelector(`.qty-input[data-id="${id}"]`);
+                    let currentQty = parseInt(input.value) || 0;
+                    
+                    if (this.classList.contains('plus')) {
+                        currentQty += 1;
+                    } else {
+                        currentQty = Math.max(0, currentQty - 1);
+                    }
+                    
+                    input.value = currentQty;
+                    updateSubtotal(id);
+                    updateTotal();
+                });
+            });
+
+            // 数量输入框事件
+            document.querySelectorAll('.qty-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const id = parseInt(this.dataset.id);
+                    let value = parseInt(this.value) || 0;
+                    value = Math.max(0, value);
+                    this.value = value;
+                    updateSubtotal(id);
+                    updateTotal();
+                });
+            });
+
+            // 生成订单按钮事件
+            document.getElementById('generate-order-btn').addEventListener('click', generateOrder);
+        }
+
+        // 更新单个商品小计
+        function updateSubtotal(productId) {
+            const product = products.find(p => p.id === productId);
+            const input = document.querySelector(`.qty-input[data-id="${productId}"]`);
+            const qty = parseInt(input.value) || 0;
+            const subtotal = (product.price * qty).toFixed(2);
+            document.querySelector(`.product-subtotal[data-id="${productId}"]`).textContent = `${subtotal} RMB`;
+        }
+
+        // 更新订单总计
+        function updateTotal() {
+            let totalQty = 0;
+            let totalAmount = 0;
+            products.forEach(product => {
+                const input = document.querySelector(`.qty-input[data-id="${product.id}"]`);
+                const qty = parseInt(input.value) || 0;
+                totalQty += qty;
+                totalAmount += product.price * qty;
+            });
+            document.getElementById('total-qty').textContent = totalQty;
+            document.getElementById('total-amount').textContent = `${totalAmount.toFixed(2)} RMB`;
+        }
+
+        // 表单校验函数
+        function validateForm() {
+            const name = document.getElementById('customer-name').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            const address = document.getElementById('customer-address').value.trim();
+
+            if (!name) {
+                showToast('Please enter your full name');
+                return false;
+            }
+            if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
+                showToast('Please enter a valid 11-digit phone number');
+                return false;
+            }
+            if (!address) {
+                showToast('Please enter your full delivery address');
+                return false;
+            }
+            return { name, phone, address };
+        }
+
+        // 生成订单并复制到剪贴板
+        function generateOrder() {
+            // 先校验收货信息
+            const customerInfo = validateForm();
+            if (!customerInfo) return;
+
+            let orderText = 'Assalamualaikum, here is my order:\n\n';
+            // 收货信息加入订单文本
+            orderText += '=== Customer Information ===\n';
+            orderText += `Name: ${customerInfo.name}\n`;
+            orderText += `Phone: ${customerInfo.phone}\n`;
+            orderText += `Delivery Address: ${customerInfo.address}\n\n`;
+            orderText += '=== Product List ===\n';
+
+            let hasItems = false;
+            // 遍历选中的商品
+            products.forEach(product => {
+                const input = document.querySelector(`.qty-input[data-id="${product.id}"]`);
+                const qty = parseInt(input.value) || 0;
+                if (qty > 0) {
+                    hasItems = true;
+                    const subtotal = (product.price * qty).toFixed(2);
+                    orderText += `${product.id}. ${product.name} - ${product.price} RMB x ${qty} = ${subtotal} RMB\n`;
+                }
+            });
+
+            // 未选择商品提示
+            if (!hasItems) {
+                showToast('Please select at least one product');
+                return;
+            }
+
+            // 添加总计信息
+            const totalQty = document.getElementById('total-qty').textContent;
+            const totalAmount = document.getElementById('total-amount').textContent;
+            orderText += `\n=== Order Summary ===\n`;
+            orderText += `Total Quantity: ${totalQty}\nTotal Amount: ${totalAmount}`;
+
+            // 复制到剪贴板（兼容微信内置浏览器）
+            navigator.clipboard.writeText(orderText).then(() => {
+                showToast('Order Copied! Paste it in inbox now.');
+                document.getElementById('order-detail').textContent = orderText;
+                document.getElementById('order-detail').style.display = 'block';
+            }).catch(() => {
+                // 兼容旧版浏览器
+                const textArea = document.createElement('textarea');
+                textArea.value = orderText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('Order Copied! Paste it in inbox now.');
+                document.getElementById('order-detail').textContent = orderText;
+                document.getElementById('order-detail').style.display = 'block';
+            });
+        }
+
+        // 提示弹窗
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
